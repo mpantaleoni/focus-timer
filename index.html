@@ -2,8 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Focus Timer</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Focus">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f6f4ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#161514" media="(prefers-color-scheme: dark)">
 <style>
   :root {
     --bg: #f6f4ef;
@@ -38,7 +46,10 @@
     display: flex;
     justify-content: center;
     padding: 32px 16px;
+    padding: max(32px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+             max(32px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
     transition: background .3s;
+    -webkit-tap-highlight-color: transparent;
   }
   main { width: 100%; max-width: 420px; }
   .card {
@@ -96,6 +107,7 @@
   li input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--done); cursor: pointer; }
   li .del { border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 18px; opacity: 0; }
   li:hover .del { opacity: 1; }
+  @media (hover: none) { li .del { opacity: 1; } }
   .empty { color: var(--muted); font-size: 14px; text-align: center; padding: 8px; }
 
   .stats { display: flex; gap: 12px; }
@@ -320,6 +332,10 @@ document.addEventListener('keydown', e => {
 });
 
 renderTasks();
+
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
 </script>
 </body>
 </html>
